@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"ansi"
+	"fmt"
+)
 
 type BattleField struct {
 	Length         int
@@ -47,11 +50,16 @@ func (bf BattleField) Draw() error {
 		fmt.Println()
 	}
 	fmt.Println()
+	fmt.Print("h")
 	return nil
 }
 
 // Erase erases the console output representation of the battlefield.
 func (bf BattleField) Erase() error {
+	for y := bf.Height; y > 0; y-- {
+		fmt.Print(ansi.DL)
+		fmt.Print(ansi.CUU)
+	}
 	return fmt.Errorf("Not yet implemented.")
 }
 
