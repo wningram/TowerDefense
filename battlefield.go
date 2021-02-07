@@ -38,7 +38,12 @@ func (bf BattleField) Draw() error {
 					bf.Players[Location{x, y}].Active = false
 				}
 			} else if player, exists := bf.Players[Location{x, y}]; exists && player.Active {
-				if player.Enemy {
+				if !player.Bot {
+					//if x != bf.Length-1 {
+					//	panic(fmt.Errorf("Player must be on edge."))
+					//}
+					fmt.Printf("=|")
+				} else if player.Enemy {
 					fmt.Printf("*")
 				} else {
 					fmt.Printf("#")
@@ -49,18 +54,37 @@ func (bf BattleField) Draw() error {
 		}
 		fmt.Println()
 	}
-	fmt.Println()
-	fmt.Print("h")
+	fmt.Println("-----------------------\n")
 	return nil
 }
 
 // Erase erases the console output representation of the battlefield.
-func (bf BattleField) Erase() error {
+func (bf BattleField) Erase() {
 	for y := bf.Height; y > 0; y-- {
 		fmt.Print(ansi.DL)
 		fmt.Print(ansi.CUU)
 	}
-	return fmt.Errorf("Not yet implemented.")
 }
 
-// TODO: Add function to move player forward, should be triggered every iteration
+// Next moves each player in its specified direction by one increment.
+func (bf BattleField) Next() {
+	for loc, player := range bf.Players {
+		// DOn't increment X value for UserPlayer
+		if !player.Bot {
+			continue
+		}
+
+		if loc.X != bf.DefenseLineLoc {
+			delete(bf.Players, loc)
+			if player.Enemy {
+				loc.X++
+			} else {
+				loc.X--
+			}
+			bf.Players[loc] = player
+		}
+	}
+	bf.Draw()
+	stats := Stats{bf}
+	stats.Print()
+}
