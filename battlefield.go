@@ -32,16 +32,13 @@ func (bf BattleField) Draw() error {
 			if x == bf.DefenseLineLoc {
 				if _, exists := bf.Players[Location{x, y}]; !exists {
 					fmt.Printf("|")
-				} else {
+				} else if player, exists := bf.Players[Location{x, y}]; exists && player.Enemy {
 					fmt.Printf(" ")
 					// Deactive player so that it does not move forward anymore
 					bf.Players[Location{x, y}].Active = false
 				}
 			} else if player, exists := bf.Players[Location{x, y}]; exists && player.Active {
 				if !player.Bot {
-					//if x != bf.Length-1 {
-					//	panic(fmt.Errorf("Player must be on edge."))
-					//}
 					fmt.Printf("=|")
 				} else if player.Enemy {
 					fmt.Printf("*")
@@ -74,13 +71,13 @@ func (bf BattleField) Next() {
 			continue
 		}
 
-		if loc.X != bf.DefenseLineLoc {
+		if loc.X != bf.DefenseLineLoc && player.Enemy {
 			delete(bf.Players, loc)
-			if player.Enemy {
-				loc.X++
-			} else {
-				loc.X--
-			}
+			loc.X++
+			bf.Players[loc] = player
+		} else if !player.Enemy {
+			delete(bf.Players, loc)
+			loc.X--
 			bf.Players[loc] = player
 		}
 	}
