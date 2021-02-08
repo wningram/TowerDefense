@@ -71,6 +71,12 @@ func (bf BattleField) Next() {
 			continue
 		}
 
+		// If the next space over from an enemy is an ally, then delete the current enemy
+		if player, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !player.Enemy {
+			delete(bf.Players, loc)
+			continue
+		}
+
 		if loc.X != bf.DefenseLineLoc && player.Enemy {
 			delete(bf.Players, loc)
 			loc.X++
