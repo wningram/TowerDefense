@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	tick := time.Tick(1 * time.Second)
+	tick := time.Tick(500 * time.Millisecond)
 	players := map[Location]*Player{
 		Location{80, 2}: &Player{true, true, true},
 		Location{90, 5}: &Player{true, true, true},

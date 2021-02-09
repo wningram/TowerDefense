@@ -105,8 +105,8 @@ func (bf BattleField) Next() {
 			continue
 		}
 
-		// If the right-adjacent object is an inactive enemy...
-		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Active && loc.X+1 == bf.DefenseLineLoc {
+		// If the right-adjacent object is an inactive enemy and current player is enemy...
+		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Active && loc.X+1 == bf.DefenseLineLoc && player.Enemy {
 			// Jump over the right-adjacent object
 			delete(bf.Players, loc)
 			loc.X = loc.X + 2
@@ -114,10 +114,15 @@ func (bf BattleField) Next() {
 			continue
 		}
 
-		// If adjacent space to the right is teh UserPlayer...game over
-		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Bot {
+		// If adjacent space to the right is teh UserPlayer and currently player is enemy...game over
+		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Bot && player.Enemy {
 			bf.DrawGameOver()
 			os.Exit(0)
+		}
+
+		// If a player goes out of range, delete it
+		if (loc.X+1 > bf.Length && player.Enemy) || (loc.X-1 < 0 && !player.Enemy) {
+			delete(bf.Players, loc)
 		}
 
 		if loc.X != bf.DefenseLineLoc && player.Enemy {
