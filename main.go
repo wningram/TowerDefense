@@ -9,7 +9,7 @@ func main() {
 	fmt.Printf("Hello WOrld\n")
 	tick := time.Tick(1 * time.Second)
 	players := map[Location]*Player{
-		Location{10, 2}: &Player{true, true, true},
+		Location{80, 2}: &Player{true, true, true},
 		Location{90, 5}: &Player{true, true, true},
 		Location{95, 5}: &Player{true, true, false},
 	}

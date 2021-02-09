@@ -71,8 +71,17 @@ func (bf BattleField) Next() {
 			continue
 		}
 
+		// If teh adjacent player on teh left is inactive...
+		if nextPlayer, exists := bf.Players[Location{loc.X - 1, loc.Y}]; exists && !nextPlayer.Active {
+			// Jump over that player
+			delete(bf.Players, loc)
+			loc.X = loc.X - 2
+			bf.Players[loc] = player
+			continue
+		}
+
 		// If the next space over from an enemy is an ally, then delete the current enemy
-		if player, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !player.Enemy {
+		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Enemy && player.Active {
 			delete(bf.Players, loc)
 			continue
 		}
