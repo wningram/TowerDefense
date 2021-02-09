@@ -3,6 +3,7 @@ package main
 import (
 	"ansi"
 	"fmt"
+	"os"
 )
 
 type BattleField struct {
@@ -55,6 +56,24 @@ func (bf BattleField) Draw() error {
 	return nil
 }
 
+func (bf BattleField) DrawGameOver() {
+	var pos Location
+	pos.X = (int)(bf.Length / 2)
+	pos.Y = (int)(bf.Height / 2)
+	for y := 0; y < bf.Height; y++ {
+		for x := 0; x < pos.X; x++ {
+			if y == pos.Y-1 && x == pos.X-1 {
+				fmt.Print("Game Over!")
+			} else if y > pos.Y-1 {
+				continue
+			} else {
+				fmt.Print(" ")
+			}
+		}
+		fmt.Println()
+	}
+}
+
 // Erase erases the console output representation of the battlefield.
 func (bf BattleField) Erase() {
 	for y := bf.Height; y > 0; y-- {
@@ -84,6 +103,12 @@ func (bf BattleField) Next() {
 		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Enemy && player.Active {
 			delete(bf.Players, loc)
 			continue
+		}
+
+		// If adjacent space to the right is teh UserPlayer...game over
+		if nextPlayer, exists := bf.Players[Location{loc.X + 1, loc.Y}]; exists && !nextPlayer.Bot {
+			bf.DrawGameOver()
+			os.Exit(0)
 		}
 
 		if loc.X != bf.DefenseLineLoc && player.Enemy {
