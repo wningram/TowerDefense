@@ -3,6 +3,7 @@ package main
 import (
 	"ansi"
 	"fmt"
+	"math/rand"
 	"os"
 )
 
@@ -11,10 +12,31 @@ type BattleField struct {
 	Height         int
 	DefenseLineLoc int
 	Players        map[Location]*Player
+	MaxEnemies     int
+}
+
+func (bf *BattleField) CountEnemies() int {
+	var cntEnemies int
+	for _, player := range bf.Players {
+		if player.Enemy && player.Active && player.Bot {
+			cntEnemies++
+		}
+	}
+	return cntEnemies
+}
+
+func (bf *BattleField) InjectEnemies() {
+	cntEnemies := bf.CountEnemies()
+
+	for cntEnemies < bf.MaxEnemies {
+		yPos := rand.Intn(bf.Height)
+		bf.Players[Location{0, yPos}] = &Player{true, true, true}
+		cntEnemies = bf.CountEnemies()
+	}
 }
 
 // Draw draws the battlefield to the console, including all of the players.
-func (bf BattleField) Draw() error {
+func (bf *BattleField) Draw() error {
 	if bf.Length < 1 {
 		return fmt.Errorf("Cannot draw battlefield with no length.")
 	}
@@ -52,7 +74,7 @@ func (bf BattleField) Draw() error {
 		}
 		fmt.Println()
 	}
-	fmt.Println("-----------------------\n")
+	fmt.Println("-----------------------")
 	return nil
 }
 
@@ -83,7 +105,7 @@ func (bf BattleField) Erase() {
 }
 
 // Next moves each player in its specified direction by one increment.
-func (bf BattleField) Next() {
+func (bf *BattleField) Next() {
 	for loc, player := range bf.Players {
 		// DOn't increment X value for UserPlayer
 		if !player.Bot {
@@ -135,7 +157,8 @@ func (bf BattleField) Next() {
 			bf.Players[loc] = player
 		}
 	}
+	bf.InjectEnemies()
 	bf.Draw()
-	stats := Stats{bf}
+	stats := Stats{*bf}
 	stats.Print()
 }

@@ -18,6 +18,7 @@ func main() {
 		Height:         10,
 		DefenseLineLoc: 90,
 		Players:        players,
+		MaxEnemies:     5,
 	}
 	kb := Keyboard{&players}
 

@@ -12,6 +12,7 @@ func (s Stats) Print() {
 		if !player.Bot {
 			fmt.Printf("UserPlayer Y: %d\n", loc.Y)
 			fmt.Printf("UserPlayer X: %d\n", loc.X)
+			fmt.Printf("Total enemies: %d\n", s.Bf.CountEnemies())
 			fmt.Print("---------------------------\n")
 			return
 		}
