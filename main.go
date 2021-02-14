@@ -7,10 +7,10 @@ import (
 func main() {
 	tick := time.Tick(500 * time.Millisecond)
 	players := map[Location]*Player{
-		Location{80, 2}: &Player{true, true, true},
-		Location{90, 5}: &Player{true, true, true},
-		Location{95, 5}: &Player{true, true, false},
-		Location{85, 5}: &Player{true, true, true},
+		{80, 2}: {true, true, true},
+		{90, 5}: {true, true, true},
+		{95, 5}: {true, true, false},
+		{85, 5}: {true, true, true},
 	}
 
 	bf := BattleField{

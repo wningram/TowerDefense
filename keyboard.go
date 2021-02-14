@@ -30,11 +30,13 @@ func (kb *Keyboard) addAllyPlayer() {
 	)
 	for loc, player := range *kb.PlayersPtr {
 		if !player.Bot { // If we have iterated to UserPlayer
+			// Set the position of the new ally to one space left of the UserPlayer
 			xPos = loc.X - 1
 			yPos = loc.Y
 			break
 		}
 	}
+	// Add ally player to players map
 	(*kb.PlayersPtr)[Location{xPos, yPos}] = &Player{false, true, true}
 }
 

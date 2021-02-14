@@ -1,10 +1,11 @@
 package main
 
 import (
-	"ansi"
 	"fmt"
 	"math/rand"
 	"os"
+
+	"github.com/pborman/ansi"
 )
 
 type BattleField struct {
